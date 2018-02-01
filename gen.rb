@@ -8,6 +8,8 @@ options = {
   aggressive: false,
   include: [],
   exclude: [],
+  max_length: 1000,
+  min_length: 1,
   template: "#{File.join(File.dirname(__FILE__), 'templates', 'text.txt.erb')}"
 }
 
@@ -29,6 +31,14 @@ OptionParser.new do |opts|
   opts.on('-t', '--template FILE', 'Path to ERB file to use as template for output') do |path|
     options[:template] = path
   end
+
+  opts.on('--min-length=MIN', 'Minimum number of characters for words to include') do |min|
+    options[:min_length] = Integer(min)
+  end
+
+  opts.on('--max-length=MAX', 'Maximum number of characters for words to include') do |max|
+    options[:max_length] = Integer(max)
+  end
 end.parse!
 
 words = Set.new
@@ -37,6 +47,8 @@ options[:include].each do |path|
   File.read(path).each_line do |line|
     line.strip!
     next if line.empty?
+    next if line.length < options[:min_length]
+    next if line.length > options[:max_length]
     words.add(line)
   end
 end
