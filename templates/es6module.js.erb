@@ -1,0 +1,7 @@
+const words = [
+  <%- words.each do |word| -%>
+  '<%= word %>',
+  <%- end -%>
+];
+
+export default words;
